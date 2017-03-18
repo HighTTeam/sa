@@ -16,7 +16,7 @@ public class AdminController {
     @Value("${application.message:Hello World}")
     private String message = "Hello World";
 
-    @GetMapping("/admin/home")
+    @GetMapping(value = {"/admin", "/admin/home"})
     public String index(Map<String, Object> model) {
         return "index";
     }

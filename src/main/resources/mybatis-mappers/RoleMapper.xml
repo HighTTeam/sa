@@ -2,9 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="hight.sa.mapper.security.RoleMapper">
 
-    <resultMap id="BaseResultMap" type="hight.sa.model.Role">
+    <resultMap id="Role" type="hight.sa.model.Role">
         <id column="id" property="id" jdbcType="INTEGER"/>
+        <id column="role" property="role" jdbcType="VARCHAR"/>
+        <id column="name" property="name" jdbcType="VARCHAR"/>
+        <id column="description" property="description" jdbcType="VARCHAR"/>
+        <id column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <sql id="Select_All">
+        select id, role, name, description, created_at
+    </sql>
+
+    <select id="findAll" resultMap="Role">
+        <include refid="Select_All" /> from role
+    </select>
 
 </mapper>
