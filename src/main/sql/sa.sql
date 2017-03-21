@@ -7,7 +7,7 @@
 #
 # Host: 192.168.13.102 (MySQL 5.6.33-0ubuntu0.14.04.1-log)
 # Database: sa
-# Generation Time: 2017-03-16 04:40:04 +0000
+# Generation Time: 2017-03-21 14:27:03 +0000
 # ************************************************************
 
 
@@ -18,6 +18,40 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+# Dump of table file_info
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `file_info`;
+
+CREATE TABLE `file_info` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(128) NOT NULL DEFAULT '',
+  `file_type` varchar(16) NOT NULL DEFAULT '',
+  `file_owner` varchar(32) NOT NULL DEFAULT '',
+  `file_path` varchar(256) NOT NULL DEFAULT '',
+  `uploaded_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table file_upload_log
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `file_upload_log`;
+
+CREATE TABLE `file_upload_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `file_name` int(11) DEFAULT NULL,
+  `file_type` int(11) DEFAULT NULL,
+  `file_owner` int(11) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `uploaded_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 # Dump of table persistent_logins
@@ -38,7 +72,7 @@ LOCK TABLES `persistent_logins` WRITE;
 
 INSERT INTO `persistent_logins` (`username`, `series`, `token`, `last_used`)
 VALUES
-	('admin','QFBq4KypcWQAShud9VwXDw==','3uLJny0xi0VHvr7drSSwOw==','2017-03-16 12:39:13');
+  ('admin','QFBq4KypcWQAShud9VwXDw==','FuO6I9BbBgA/3WG9jfS/0Q==','2017-03-16 14:14:16');
 
 /*!40000 ALTER TABLE `persistent_logins` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -63,7 +97,8 @@ LOCK TABLES `role` WRITE;
 
 INSERT INTO `role` (`id`, `role`, `name`, `description`, `created_at`)
 VALUES
-	(1,'ADMIN','系统管理员','系统管理员','2017-03-15 03:04:49');
+  (1,'ADMIN','系统管理员','系统管理员','2017-03-15 03:04:49'),
+  (2,'ROLE_ADMIN','123','123','2017-03-16 13:17:30');
 
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -87,7 +122,7 @@ LOCK TABLES `user` WRITE;
 
 INSERT INTO `user` (`id`, `username`, `password`, `created_at`)
 VALUES
-	(1,'admin','admin','2017-03-15 03:05:21');
+  (1,'admin','admin','2017-03-15 03:05:21');
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -110,7 +145,7 @@ LOCK TABLES `user_role` WRITE;
 
 INSERT INTO `user_role` (`id`, `role_id`, `user_id`)
 VALUES
-	(1,1,1);
+  (1,1,1);
 
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
