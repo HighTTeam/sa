@@ -1,9 +1,15 @@
 package hight.sa.service;
 
+import hight.sa.common.SystemException;
 import hight.sa.controller.admin.vo.StoreStatus;
+import hight.sa.mapper.FileUploadLogMapper;
+import hight.sa.model.FileUploadLog;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,25 +21,38 @@ import java.util.*;
 /**
  * Created by neron.liu on 18/03/2017.
  */
+@Log4j
 @Service
 public class FileManageService {
 
     @Value("file.storage_root_path")
     private String storageRootPath;
 
+    @Autowired
+    private FileUploadLogMapper fileUploadLogMapper;
 
-    public List<StoreStatus> storeFiles(File[] files) {
+    public List<StoreStatus> storeFiles(String fileOwner, MultipartFile[] files) {
+        FilesHelper filesHelper = new FilesHelper(storageRootPath, files);
 
-        return null;
+        try {
+            filesHelper.createDirs();
+        } catch (SystemException e) {
+            log.error(e);
+            return Collections.emptyList();
+        }
+
+        return filesHelper.getStatusList();
     }
 
     private class FilesHelper {
 
         private String storageRootPath;
-        private File[] files;
+        private MultipartFile[] files;
         private Path filesStorePath;
 
-        FilesHelper(String storageRootPath, File[] files) {
+        private List<StoreStatus> statusList;
+
+        FilesHelper(String storageRootPath, MultipartFile[] files) {
             this.storageRootPath = storageRootPath;
             this.files = files;
 
@@ -41,17 +60,25 @@ public class FileManageService {
             this.filesStorePath = getYearMonthBasedDirPath();
         }
 
-        void createDirs() throws Exception {
+        void createDirs() throws SystemException {
             if (Files.notExists(filesStorePath)) {
                 try {
                     Files.createDirectories(filesStorePath);
                 } catch (IOException e) {
-                    throw new Exception(filesStorePath.toString() + " create failed!", e);
+                    throw SystemException.of(filesStorePath.toString() + " create failed!", e);
                 }
             }
         }
 
-        Path getYearMonthBasedDirPath() {
+        void deleteQuietly() {
+            FileUtils.deleteQuietly(filesStorePath.toFile());
+        }
+
+        List<StoreStatus> getStatusList() {
+            return statusList;
+        }
+
+        private Path getYearMonthBasedDirPath() {
             Calendar calendar = Calendar.getInstance();
 
             return Paths.get(
@@ -59,11 +86,6 @@ public class FileManageService {
                     String.valueOf(calendar.get(Calendar.YEAR)),
                     String.valueOf(calendar.get(Calendar.MONTH)));
         }
-
-        void deleteQuietly() {
-            FileUtils.deleteQuietly(filesStorePath.toFile());
-        }
-
     }
 
 }
